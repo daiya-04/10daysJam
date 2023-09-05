@@ -8,4 +8,10 @@ private:
 
 public:
 
+	virtual void Initialize(Sprite* sprite);
+
+	virtual void Update();
+
+	virtual void Draw();
+
 };
