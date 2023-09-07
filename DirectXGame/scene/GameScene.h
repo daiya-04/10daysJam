@@ -8,6 +8,8 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "block.h"
+#include "Title.h"
 
 /// <summary>
 /// ゲームシーン
@@ -40,6 +42,8 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void StageSelect();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -48,4 +52,12 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+	
+	/// ブロック
+	std::unique_ptr<Block> block_;
+	float stage_;
+
+	///タイトル
+	std::unique_ptr<Title> title_;
+	bool title = false;
 };

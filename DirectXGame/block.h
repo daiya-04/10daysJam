@@ -8,44 +8,144 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "BaseObject.h"
+#include <optional>
+
 
 /// <summary>
-/// ƒQ[ƒ€ƒV[ƒ“
+/// ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³
 /// </summary>
-class GameScene {
+class Block{
 
-public: // ƒƒ“ƒoŠÖ”
+public: // ãƒ¡ãƒ³ãƒé–¢æ•°
 	/// <summary>
-	/// ƒRƒ“ƒXƒgƒNƒ‰ƒ^
+	/// ã‚³ãƒ³ã‚¹ãƒˆã‚¯ãƒ©ã‚¿
 	/// </summary>
-	GameScene();
+	Block();
 
 	/// <summary>
-	/// ƒfƒXƒgƒ‰ƒNƒ^
+	/// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	/// </summary>
-	~GameScene();
+	~Block();
 
 	/// <summary>
-	/// ‰Šú‰»
+	/// åˆæœŸåŒ–
 	/// </summary>
 	void Initialize();
 
 	/// <summary>
-	/// –ˆƒtƒŒ[ƒ€ˆ—
+	/// æ¯ãƒ•ãƒ¬ãƒ¼ãƒ å‡¦ç†
 	/// </summary>
 	void Update();
 
 	/// <summary>
-	/// •`‰æ
+	/// æç”»
 	/// </summary>
 	void Draw();
 
-private: // ƒƒ“ƒo•Ï”
+
+
+	void SetStage(const float stage) { 
+		stage_ = stage;
+	}
+	
+	//ãƒ¡ãƒ‹ãƒ¥ãƒ¼åˆæœŸåŒ–
+	void MenuInitialize();
+
+	void MenuUpdata();
+
+	void Stage1Initialize();
+
+	void Stage2Initialize();
+
+	void Stage3Initialize();
+
+	void Stage4Initialize();
+
+	void stage1();
+	void stage2();
+	void stage3();
+	void stage4();
+
+	void blockBreak();
+
+	void BreackEffect(int lane);
+
+private: // ãƒ¡ãƒ³ãƒå¤‰æ•°
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
-	/// <summary>
-	/// ƒQ[ƒ€ƒV[ƒ“—p
-	/// </summary>
+	uint32_t textureWhite_;
+	uint32_t textureRed_;
+	uint32_t textureBlue_;
+	uint32_t textureGreen_;
+	uint32_t textureYellow_;
+
+	float pos = 720;
+	float kSpeed;
+
+	//ç”»åƒç•ªå·
+	int white = 0;
+	int red = 1;
+	int blue = 2;
+	int green = 3;
+	int yellow = 4;
+	
+	//ãƒ¬ãƒ¼ãƒ³
+	int lane1[50];
+	int lane2[50];
+	int lane3[50];
+
+	//ãƒ–ãƒ­ãƒƒã‚¯ã®ç•ªå·
+	enum {
+		NONE = 0,    // 0
+		NORMALBLOCK, // 1
+		REDBLOCK,    // 2
+		BLUEBLOCK,   // 3
+		GREENBLOCK,  // 4
+		YELLOWBLOCK  // 5
+	};
+
+	/// ãƒ–ãƒ­ãƒƒã‚¯
+	//ã‚Œãƒ¼ã‚“1
+	Sprite* white1_[50] = {nullptr};
+	Sprite* red1_[50] = {nullptr};
+	Sprite* blue1_[50] = {nullptr};
+	Sprite* yellow1_[50] = {nullptr};
+	Sprite* green1_[50] = {nullptr};
+	// ã‚Œãƒ¼ã‚“2
+	Sprite* white2_[50] = {nullptr};
+	Sprite* red2_[50] = {nullptr};
+	Sprite* blue2_[50] = {nullptr};
+	Sprite* yellow2_[50] = {nullptr};
+	Sprite* green2_[50] = {nullptr};
+	// ã‚Œãƒ¼ã‚“3
+	Sprite* white3_[50] = {nullptr};
+	Sprite* red3_[50] = {nullptr};
+	Sprite* blue3_[50] = {nullptr};
+	Sprite* yellow3_[50] = {nullptr};
+	Sprite* green3_[50] = {nullptr};
+
+
+	// æŒ¯ã‚‹èˆã„
+	enum class Behavior {
+		kRoot,         // ãƒ¡ãƒ‹ãƒ¥ãƒ¼
+		kStage1,        // ã‚¹ãƒ†ãƒ¼ã‚¸1
+		kStage2, // ã‚¹ãƒ†ãƒ¼ã‚¸2
+		kStage3, // ã‚¹ãƒ†ãƒ¼ã‚¸3
+		kStage4, // ã‚¹ãƒ†ãƒ¼ã‚¸ï¼”
+	};
+
+	Behavior behavior_ = Behavior::kRoot;
+	// æ¬¡ã®æŒ¯ã‚‹èˆã„ãƒªã‚¯ã‚¨ã‚¹ãƒˆ
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
+
+	float stage_;
+	bool menu_;
+
+	
+	bool effect_ = false;
+	Vector2 velocity[15];
+	Vector2 effectPos[15];
 };
