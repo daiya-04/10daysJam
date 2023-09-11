@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 #include "Sprite.h"
 
 class BaseObject {
-private:
+protected:
 
 	Sprite* sprite_;
 
