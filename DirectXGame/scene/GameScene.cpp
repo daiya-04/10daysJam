@@ -2,6 +2,21 @@
 #include "TextureManager.h"
 #include <cassert>
 
+void GameScene::StageSelect() {
+	block_->SetStage(stage_);
+	if (input_->TriggerKey(DIK_LEFTARROW)) {
+		stage_ -= 1.0f;
+	} else if (input_->TriggerKey(DIK_RIGHTARROW)) {
+		stage_ += 1.0f;
+	}
+
+	if (stage_ >= 4) {
+		stage_ = 4;
+	} else if (stage_ <= 1) {
+		stage_ = 1;
+	}
+}
+
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {}
@@ -11,11 +26,28 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	title_ = std::make_unique<Title>();
+	title_->Initialize();
+
+	block_ = std::make_unique<Block>();
+	// ブロックの初期化
+	block_->Initialize();
+	
+
+
 }
 
 void GameScene::Update() {
+	title_->Update();
+	title = title_->GetTitle();
+	
 
-
+	if (title) {
+		StageSelect();
+		block_->Update();
+	}
+	
 
 }
 
@@ -57,6 +89,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	block_->Draw();
+	title_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

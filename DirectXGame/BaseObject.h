@@ -1,14 +1,15 @@
 ﻿#pragma once
 #include "Sprite.h"
+#include <vector>
 
 class BaseObject {
 protected:
 
-	Sprite* sprite_;
+	std::vector<Sprite*> sprite_;
 
 public:
 
-	virtual void Initialize(Sprite* sprite);
+	virtual void Initialize(const std::vector<Sprite*>& sprite);
 
 	virtual void Update();
 
