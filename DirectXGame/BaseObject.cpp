@@ -4,7 +4,6 @@
 void BaseObject::Initialize(const std::vector<Sprite*>& sprite) {
 	
 	sprite_ = sprite;
-	sprite_->Initialize();
 
 }
 
