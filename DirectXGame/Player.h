@@ -22,7 +22,7 @@ private:
 	};
 
 	Behavior behavior_ = Behavior::kRoot;
-	std::optional<Behavior> behaviorRequest_ = std::nullopt;
+	std::optional<Behavior> playerBehaviorRequest_ = std::nullopt;
 
 	Input* input_ = nullptr;
 
@@ -53,6 +53,8 @@ private:
 	Audio* audio_ = nullptr;
 	uint32_t chargeSoundData_ = 0;
 	uint32_t soundHandle_ = 0;
+	uint32_t chargeMaxSoundData_ = 0;
+	uint32_t chargeMaxSoundHandle_ = 0;
 
 public:
 	/// <summary>
@@ -84,6 +86,8 @@ public:
 	/// 攻撃行動更新
 	/// </summary>
 	void AttackUpdate();
+
+	void SceneInitialize();
 
 
 	Vec2 GetPosition() { return position_; }

@@ -24,6 +24,7 @@ void Player::Initialize(Sprite* sprite) {
 	player_->SetAnchorPoint({0.5f, 0.5f});
 
 	chargeSoundData_ = audio_->LoadWave("charge.mp3");
+	chargeMaxSoundData_ = audio_->LoadWave("chargeMax.mp3");
 
 }
 
@@ -31,8 +32,8 @@ void Player::Update() {
 
 	random = {};
 
-	if (behaviorRequest_) {
-		behavior_ = behaviorRequest_.value();
+	if (playerBehaviorRequest_) {
+		behavior_ = playerBehaviorRequest_.value();
 		switch (behavior_) {
 			case Behavior::kRoot:
 		    default:
@@ -42,7 +43,7 @@ void Player::Update() {
 			    AttackInitialize();
 				break;
 		}
-		behaviorRequest_ = std::nullopt;
+		playerBehaviorRequest_ = std::nullopt;
 	}
 
 	switch (behavior_) {
@@ -94,6 +95,12 @@ void Player::RootUpdate() {
 					soundHandle_ = audio_->PlayWave(chargeSoundData_, false, 0.5f);
 				}
 			}
+			if (charge == 45) {
+				chargeMaxSoundHandle_ = audio_->PlayWave(chargeMaxSoundData_, false, 0.5f);
+				/*if (!audio_->IsPlaying(chargeMaxSoundHandle_)) {
+					
+				}*/
+			}
 			if (charge > 45) {
 				random.x = static_cast<float>(std::rand() % randomRange + 1);
 				random.y = static_cast<float>(std::rand() % randomRange + 1);
@@ -105,7 +112,7 @@ void Player::RootUpdate() {
 	
 	if (preKey_ && !key_) {
 		if (num == 1.0f) {
-     		behaviorRequest_ = Behavior::kAttack;
+     		playerBehaviorRequest_ = Behavior::kAttack;
 			if (charge <= 30) {
 				type_ = Type::Soft;
 			} else {
@@ -139,7 +146,7 @@ void Player::AttackInitialize() {
 void Player::AttackUpdate() {
 
 	if (num == 1.0f) {
-		behaviorRequest_ = Behavior::kRoot;
+		playerBehaviorRequest_ = Behavior::kRoot;
 		return;
 	}
 
@@ -150,3 +157,14 @@ void Player::AttackUpdate() {
 	
 }
 
+void Player::SceneInitialize() {
+
+	position_ = {200.0f, 600.0f - (size_.y / 2.0f)};
+	sprite_->SetPosition({position_.x, position_.y});
+	playerBehaviorRequest_ = Behavior::kRoot;
+	RootInitialize();
+	key_ = false;
+	preKey_ = false;
+	charge = 0;
+
+}

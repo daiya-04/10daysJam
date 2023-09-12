@@ -110,6 +110,8 @@ void GameScene::BehaviorTitleInitialize() {
 void GameScene::BehaviorMenuInitialize() {
 	scene_ = false;
 	a = 0;
+	CartPos_ = {200, 580};
+	TirepPos_ = {140, 630};
 	careMove_ = false;
 	Move_ = false;
 	// 光
@@ -130,8 +132,8 @@ void GameScene::BehaviorMenuInitialize() {
 // ゲームシーン初期化
 void GameScene::BehaviorSceneInitialize() {
 	cartSpeed = 0.0f;
-	CartPos_ = {200, 580};
-	TirepPos_ = {140, 630};
+	
+	
 	careMove_ = false;
 	Move_ = false;
 	textureBackground1_ = TextureManager::Load("title/title1.png");
@@ -140,7 +142,13 @@ void GameScene::BehaviorSceneInitialize() {
 	    textureBackground1_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 	Background2 = Sprite::Create(
 	    textureBackground2_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
-
+	player_->SceneInitialize();
+	score_->SetCombo(0);
+	score_->SetScore(0);
+	
+	startCount = startTime;
+	score_->SetTimer(LimitTime);
+	sceneChangeTimer = sceneChangeCount;
 	//ステージPOP
 	for (size_t i = 0; i < static_cast<size_t>(rockNum - 1); i++) {
 		RockPopCommand();
@@ -195,76 +203,100 @@ void GameScene::BehaviorSceneUpdata() {
 		a = 0;
 	}
 
-	if (!audio_->IsPlaying(stage1BgmData_)) {
-	    stage1Bgmhandle_ = audio_->PlayWave(stage1BgmData_, true, 0.1f);
+	startCount--;
+	startCount = max(startCount, 0);
 
-    }
+	if (score_->GetTimer() > 0 && startCount <= 0) {
+		if (!audio_->IsPlaying(stage1BgmData_)) {
+			stage1Bgmhandle_ = audio_->PlayWave(stage1BgmData_, true, 0.1f);
+		}
 
-    rock_.remove_if([](const std::unique_ptr<Rock>& rock) {
-	    if (rock->isDead()) {
-		    return true;
-	    }
-	    return false;
-    });
+		rock_.remove_if([](const std::unique_ptr<Rock>& rock) {
+			if (rock->isDead()) {
+				return true;
+			}
+			return false;
+		});
 
-    CollisionCheck();
+		CollisionCheck();
 
-    if (input_->TriggerKey(DIK_1)) {
-	    backGround_->SetTextureHandle(stage1_bgTexture_);
-    }
-    if (input_->TriggerKey(DIK_2)) {
-	    backGround_->SetTextureHandle(stage2_bgTexture_);
-    }
+		
 
-    for (const auto& rocks : rock_) {
-	    if (rocks->isDead()) {
-		    for (const auto& rock : rock_) {
-			    rock->SetRequest();
-	    	}
-	    }
-    }
+		for (const auto& rocks : rock_) {
+			if (rocks->isDead()) {
+				for (const auto& rock : rock_) {
+					rock->SetRequest();
+				}
+			}
+		}
 
-    player_->Update();
-    for (const auto& rock : rock_) {
-	    rock->Update();
-    }
-    score_->Update();
+		player_->Update();
+		for (const auto& rock : rock_) {
+			rock->Update();
+		}
+		score_->Update();
 
-    if (moveRequest_) {
-	    Vec2 interval = {1280.0f / 8.0f, 0.0f};
-	    easeStartPos = scroll;
-	    easeEndPos = scroll - interval;
-	    isMove_ = true;
-	    moveRequest_ = std::nullopt;
-    }
+		if (moveRequest_) {
+			Vec2 interval = {1280.0f / 8.0f, 0.0f};
+			easeStartPos = scroll;
+			easeEndPos = scroll - interval;
+			isMove_ = true;
+			moveRequest_ = std::nullopt;
+		}
 
-    if (isMove_) { 
+		if (isMove_) {
 
-	    num_ += 0.1f;
-	    num_ = min(num_, 1.0f);
-	    float T = Easing::easeInSine(num_);
-	    scroll = Lerp(T, easeStartPos, easeEndPos);
-	    if (num_ == 1.0f) {
-		    isMove_ = false;
-	    }
+			num_ += 0.1f;
+			num_ = min(num_, 1.0f);
+			float T = Easing::easeInSine(num_);
+			scroll = Lerp(T, easeStartPos, easeEndPos);
+			if (num_ == 1.0f) {
+				isMove_ = false;
+			}
 
-    } else {
-	    num_ = 0.0f;
-    }
+		} else {
+			num_ = 0.0f;
+		}
 
-    if (scroll.x <= -1280.0f) {
-		scroll.x = 0.0f;
-    }
-    if (--comboCoolTimer <= 0) {
-	    score_->ComboReset();
-    }
+		if (scroll.x <= -1280.0f) {
+			scroll.x = 0.0f;
+		}
+		if (--comboCoolTimer <= 0) {
+			score_->ComboReset();
+		}
 
-    backGround_->SetPosition({position_.x + scroll.x, position_.y + scroll.y});
+		backGround_->SetPosition({position_.x + scroll.x, position_.y + scroll.y});
+	}
+	if (score_->GetTimer() <= 0) {
+		sceneChangeTimer--;
+		if (sceneChangeTimer <= 0) {
+			behaviorRequest_ = Behavior::kGameClear;
+			score_->SetResultScore();
+			player_->SceneInitialize();
+		}
+	}
+	
 
 }
 
 //クリア
-void GameScene::BehaviorClearUpdata() {}
+void GameScene::BehaviorClearUpdata() {
+	order = 1;
+	if (input_->TriggerKey(DIK_SPACE)) {
+		behaviorRequest_ = Behavior::kMenuScene;
+	}
+
+	for (const auto& rock : rock_) {
+		rock->Break();
+	}
+	rock_.remove_if([](const std::unique_ptr<Rock>& rock) {
+		if (rock->isDead()) {
+			return true;
+		}
+		return false;
+	});
+
+}
 
 // オーバー
 void GameScene::BehaviorOverUpdata() {}
@@ -370,8 +402,6 @@ void GameScene::Update() {
 		// ステージ読み込み
 		if (careMove_) {
 			LoadRockPopData("stage1");
-
-			
 		}
 		break; // switch ブロックを終了
 	case 2:
@@ -381,6 +411,7 @@ void GameScene::Update() {
 
 		// ステージ読み込み
 		if (careMove_) {
+			LoadRockPopData("stage1");
 		}
 		break; // switch ブロックを終了
 	case 3:
@@ -390,6 +421,7 @@ void GameScene::Update() {
 
 		// ステージ読み込み
 		if (careMove_) {
+			LoadRockPopData("stage1");
 		}
 		break; // switch ブロックを終了
 	}
@@ -443,10 +475,15 @@ void GameScene::Update() {
 		BehaviorOverUpdata();
 		break;
 	}
-
+#ifdef _DEBUG
 	ImGui::Begin("T");
 	ImGui::Text("%d", title);
+	ImGui::Text("%d", sceneChangeTimer);
+	ImGui::Text("%d", order);
+	ImGui::Text("%d", careMove_);
 	ImGui::End();
+#endif
+	
 }
 
 void GameScene::Draw() {
@@ -518,7 +555,7 @@ void GameScene::Draw() {
 		score_->Draw();
 		break;
 	case Behavior::kGameClear:
-		BehaviorClearUpdata();
+		score_->ResultScoreDraw();
 		break;
 	case Behavior::kGameOver:
 		BehaviorOverUpdata();
@@ -599,6 +636,9 @@ void GameScene::LoadRockPopData(const std::string& fileName) {
 void GameScene::RockPopCommand() {
 
 	std::string line;
+
+	rockPopCommands.clear();                 // エラー状態をクリア
+	rockPopCommands.seekg(0, std::ios::beg); // ファイルの先頭に移動
 
 	while (getline(rockPopCommands, line)) {
 
