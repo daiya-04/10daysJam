@@ -490,24 +490,44 @@ void GameScene::Draw() {
 	
 	Background1->Draw();
 	Background2->Draw();
-	spriteCart->Draw();
 
-	for (int i = 0; i < 2; i++) {
-		spriteTire[i]->Draw();
+	switch (behavior_) {
+	case Behavior::kTitle:
+	default:
+		title_->Draw();
+		spriteCart->Draw();
+		for (int i = 0; i < 2; i++) {
+			spriteTire[i]->Draw();
+		}
+		break;
+	case Behavior::kMenuScene:
+		spriteCart->Draw();
+		for (int i = 0; i < 2; i++) {
+			spriteTire[i]->Draw();
+		}
+		spriteLight->Draw();
+		for (int i = 0; i < 3; i++) {
+			sprite[i]->Draw();
+		}
+		break;
+	case Behavior::kGameScene:
+		for (const auto& rock : rock_) {
+			rock->Draw();
+		}
+		player_->Draw();
+		score_->Draw();
+		break;
+	case Behavior::kGameClear:
+		BehaviorClearUpdata();
+		break;
+	case Behavior::kGameOver:
+		BehaviorOverUpdata();
+		break;
 	}
-	spriteLight->Draw();
-	for (int i = 0; i < 3; i++) {
-		sprite[i]->Draw();
-	}
 
-	for (const auto& rock : rock_) {
-	    rock->Draw();
-    }
-    player_->Draw();
-    score_->Draw();
-
-
-	title_->Draw();
+	spriteTransition_->Draw();
+	
+	
 	
 
 
