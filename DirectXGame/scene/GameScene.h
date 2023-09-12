@@ -42,11 +42,18 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	//トロッコ
+	void CartMove();
+
 	void StageSelect();
 
+	void BackGroundMove();
 
-		// タイトル初期化
+	// タイトル初期化
 	void BehaviorTitleInitialize();
+
+	//メニュー初期化
+	void BehaviorMenuInitialize();
 
 	// シーン初期化
 	void BehaviorSceneInitialize();
@@ -59,6 +66,9 @@ public: // メンバ関数
 
 	// タイトル
 	void BehaviorTitleUpdata();
+
+	//メニュー
+	void BehaviorMenuUpdata();
 
 	// シーン
 	void BehaviorSceneUpdata();
@@ -80,6 +90,31 @@ private: // メンバ変数
 	/// ゲームシーン用
 	/// </summary>
 	
+	//トロッコ
+	uint32_t textureCart_;
+	uint32_t textureTire_;
+	Sprite* spriteCart;
+	Sprite* spriteTire[2];
+
+	Vector2 CartPos_;
+	Vector2 TirepPos_;
+
+	// トロッコの動き
+	float floatingParameter_ = 0.0f;
+
+	// 浮遊移動サイクル
+	float cycle = 60;
+	float Pi = 3.1415f;
+	// 浮遊の振幅
+	float amplitude = 1.0f;
+
+	// トロッコの動き
+	bool Move_ = false;
+	bool careMove_ = false;
+
+	float cartSpeed = 0.0f;
+	float tireRotation;
+
 	/// ブロック
 	std::unique_ptr<Block> block_;
 	float stage_;
@@ -109,6 +144,7 @@ private: // メンバ変数
 
 	enum class Behavior {
 		kTitle,     // タイトル
+		kMenuScene, // メニュー
 		kGameScene, // ゲームシーン
 		kGameClear, // 　ゲームクリア
 		kGameOver,  // ゲームオーバー
@@ -118,4 +154,11 @@ private: // メンバ変数
 	// 次の振る舞いリクエスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 
+	//背景
+	Sprite* Background1;
+	Sprite* Background2;
+	uint32_t textureBackground1_;
+	uint32_t textureBackground2_;
+	Vector2 BackgroundPos1_;
+	Vector2 BackgroundPos2_;
 };

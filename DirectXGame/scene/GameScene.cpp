@@ -3,6 +3,53 @@
 #include <cassert>
 #include <ImGuiManager.h>
 
+void GameScene::CartMove() {
+
+	spriteCart->SetPosition(CartPos_);
+	for (int i = 0; i < 2; i++) {
+		spriteTire[i]->SetPosition({TirepPos_.x + 120 * i, TirepPos_.y});
+		spriteTire[i]->SetRotation(tireRotation);
+	}
+	cycle = float(rand() % 60 + 30);
+	amplitude = float(rand() % 3);
+
+	// 1フレームでのパラメータ加算値
+	const float steppe = 3.0f * Pi / cycle;
+
+	// パラメータを1分加算
+	floatingParameter_ += steppe;
+	// 2πを超えたら0に戻す
+	floatingParameter_ = std::fmod(floatingParameter_, 2.0f * Pi);
+
+	CartPos_.x += cartSpeed;
+	TirepPos_.x += cartSpeed;
+	CartPos_.y += std::sin(floatingParameter_) * amplitude;
+	TirepPos_.y += std::sin(floatingParameter_) * amplitude;
+	tireRotation += 0.3f;
+
+	if (input_->TriggerKey(DIK_SPACE) && !careMove_ && title) {
+		cartSpeed = 10.0f;
+		Move_ = true;
+	}
+
+	if (CartPos_.x > 1480) {
+		careMove_ = true;
+	}
+}
+
+void GameScene::BackGroundMove() {
+	BackgroundPos1_.x -= 4.0f;
+	BackgroundPos2_.x -= 4.0f;
+	if (BackgroundPos1_.x <= -640.0f) {
+		BackgroundPos1_.x = 1920;
+	}
+	if (BackgroundPos2_.x <= -640.0f) {
+		BackgroundPos2_.x = 1920;
+	}
+	Background1->SetPosition(BackgroundPos1_);
+	Background2->SetPosition(BackgroundPos2_);
+}
+
 void GameScene::StageSelect() {
 	block_->SetStage(stage_);
 	block_->SetStart(start);
@@ -10,7 +57,7 @@ void GameScene::StageSelect() {
 	--lightTime_;
 	spriteLight->SetSize(lightSize_);
 
-	//ランプ設定
+	// ランプ設定
 	for (int i = 0; i < 3; i++) {
 		sprite[i] = Sprite::Create(
 		    texture_[i], {float(320 + 320 * i), 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
@@ -42,7 +89,7 @@ void GameScene::StageSelect() {
 	}
 
 	//ステージ選択
-	if (!title_->GetMove()) {
+	if (!Move_) {
 		if (input_->TriggerKey(DIK_LEFTARROW)) {
 			stage_ -= 1.0f;
 		} else if (input_->TriggerKey(DIK_RIGHTARROW)) {
@@ -56,9 +103,61 @@ void GameScene::StageSelect() {
 		stage_ = 1;
 	}
 
-	if (title_->GetCart()) {
+	
+
+	
+}
+
+//タイトル初期化
+void GameScene::BehaviorTitleInitialize() { 
+	BackgroundPos1_ = {1280 / 2, 720 / 2};
+	BackgroundPos2_ = {1920, 720 / 2};
+	CartPos_ = {200, 580};
+	TirepPos_ = {140, 630};
+	
+}
+
+//メニュー初期化
+void GameScene::BehaviorMenuInitialize() {
+	a = 0;
+	careMove_ = false;
+	Move_ = false;
+	// 光
+	spriteLight =
+	    Sprite::Create(textureLight_, {-200, 600}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+
+	for (int i = 0; i < 3; i++) {
+		sprite[i]->SetPosition({float(320 + 320 * i), 360});
+	}
+}
+
+// ゲームシーン初期化
+void GameScene::BehaviorSceneInitialize() {
+	cartSpeed = 0.0f;
+	CartPos_ = {200, 580};
+	TirepPos_ = {140, 630};
+	careMove_ = false;
+	Move_ = false;
+	textureBackground1_ = TextureManager::Load("title/title1.png");
+	textureBackground2_ = TextureManager::Load("title/title2.png");
+	Background1 = Sprite::Create(
+	    textureBackground1_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+	Background2 = Sprite::Create(
+	    textureBackground2_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+}
+
+// クリア初期化
+void GameScene::BehaviorClearInitialize() {}
+
+// オーバー初期化
+void GameScene::BehaviorOverInitialize() {
+}
+
+//タイトル
+void GameScene::BehaviorTitleUpdata() { 
+	title_->Update();
+	if (careMove_) {
 		transition_ = true;
-		
 	}
 
 	if (start) {
@@ -67,34 +166,36 @@ void GameScene::StageSelect() {
 		transition_ = false;
 		a = 0;
 	}
-
+	title = title_->GetTitle();
 	
+	if (title) {
+		behaviorRequest_ = Behavior::kMenuScene;
+	}
 }
 
-//タイトル初期化
-void GameScene::BehaviorTitleInitialize() { 
-	title = false;
-}
+//メニュー
+void GameScene::BehaviorMenuUpdata() { 
+	title_->Update();
+	StageSelect(); 
+	if (careMove_) {
+		if (a < 1) {
+			a += 0.01f;
 
-// ゲームシーン初期化
-void GameScene::BehaviorSceneInitialize() {
-	a = 0; 
-}
-
-// クリア初期化
-void GameScene::BehaviorClearInitialize() {}
-
-// オーバー初期化
-void GameScene::BehaviorOverInitialize() {}
-
-//タイトル
-void GameScene::BehaviorTitleUpdata() {
-	
+		} else {
+			behaviorRequest_ = Behavior::kGameScene;
+			a = 1.0f;
+		}
+	}
 }
 
 //ゲームシーン
-void GameScene::BehaviorSceneUpdata() {
-	
+void GameScene::BehaviorSceneUpdata() { 
+	block_->Update();
+	if (a >= 0) {
+		a -= 0.01f;
+	} else {
+		a = 0;
+	}
 }
 
 //クリア
@@ -117,6 +218,22 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	//トロッコ
+	textureCart_ = TextureManager::Load("title/cart.png");
+	textureTire_ = TextureManager::Load("title/tire.png");
+	
+	spriteCart = Sprite::Create(textureCart_, {200, 600}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+	
+	
+	//背景
+	textureBackground1_ = TextureManager::Load("block/backGround.png");
+	textureBackground2_ = TextureManager::Load("block/backGround.png");
+	Background1 = Sprite::Create(
+	    textureBackground1_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+	Background2 = Sprite::Create(
+	    textureBackground2_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+	
 
 	title_ = std::make_unique<Title>();
 	title_->Initialize();
@@ -145,25 +262,25 @@ void GameScene::Initialize() {
 		sprite[i] = Sprite::Create(texture_[i], {-1280, 0}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 	}
 
-	for (int i = 0; i < 3; i++) {
-		sprite[i]->SetPosition({float(320 + 320 * i), 360});
+	for (int i = 0; i < 2; i++) {
+		spriteTire[i] =
+		    Sprite::Create(textureTire_, {200, 600}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 	}
-
 	
 	behaviorRequest_ = Behavior::kTitle;
 }
 
 void GameScene::Update() {
+	BackGroundMove();
+	CartMove();
+
+	
 	spriteTransition_->SetColor({1.0f, 1.0f, 1.0f, a});
-	title_->Update();
-	title = title_->GetTitle();
-	if (title) {
-		StageSelect();
-		block_->Update();
-	}
+	
+	
 	
 	if (a >= 1.0f) {
-		behaviorRequest_ = Behavior::kGameScene;
+		
 
 	} else if (transition_ && !start) {
 		a += 0.01f;
@@ -180,6 +297,9 @@ void GameScene::Update() {
 		case Behavior::kTitle:
 		default:
 			BehaviorTitleInitialize();
+			break;
+		case Behavior::kMenuScene:
+			BehaviorMenuInitialize();
 			break;
 		case Behavior::kGameScene:
 			BehaviorSceneInitialize();
@@ -205,6 +325,9 @@ void GameScene::Update() {
 	default:
 		BehaviorTitleUpdata();
 		break;
+	case Behavior::kMenuScene:
+		BehaviorMenuUpdata();
+		break;
 	case Behavior::kGameScene:
 		BehaviorSceneUpdata();
 		break;
@@ -216,7 +339,9 @@ void GameScene::Update() {
 		break;
 	}
 
-	
+	ImGui::Begin("T");
+	ImGui::Text("%d", title);
+	ImGui::End();
 }
 
 void GameScene::Draw() {
@@ -257,18 +382,27 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-
 	
-	title_->Draw();
-	if (title) {
-		spriteLight->Draw();
-		for (int i = 0; i < 3; i++) {
-			sprite[i]->Draw();
-		}
+	Background1->Draw();
+	Background2->Draw();
+	spriteCart->Draw();
+
+	for (int i = 0; i < 2; i++) {
+		spriteTire[i]->Draw();
 	}
+	spriteLight->Draw();
+	for (int i = 0; i < 3; i++) {
+		sprite[i]->Draw();
+	}
+
+
+	title_->Draw();
+	block_->Draw();
+
+
 	
 
-	block_->Draw();
+
 	spriteTransition_->Draw();
 	
 	
