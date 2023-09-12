@@ -15,6 +15,7 @@
 #include <vector>
 #include "Vec2.h"
 #include <sstream>
+#include "Score.h"
 
 /// <summary>
 /// ゲームシーン
@@ -68,7 +69,12 @@ private: // メンバ変数
 	
 	const std::string kDirectoryPath = "./Resources/RockPop/";
 	int order = 1;
-	
+
+	//スコア
+	uint32_t numberTexture_ = 0;
+	std::unique_ptr<Score> score_;
+	const int comboCoolTime = 85;
+	int comboCoolTimer = comboCoolTime;
 
 	//プレイヤー
 	uint32_t playerTexture_ = 0;
@@ -103,5 +109,6 @@ private: // メンバ変数
 	uint32_t breakMissSoundHandle_ = 0;
 	uint32_t breakSoundHandle_ = 0;
 	uint32_t stage1Bgmhandle_ = 0;
+
 
 };
