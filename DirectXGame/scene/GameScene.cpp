@@ -36,6 +36,7 @@ void GameScene::CartMove() {
 	}
 
 	if (CartPos_.x > 1480) {
+		careMove_ = true;
 		scene_ = true;
 	}
 }
@@ -139,6 +140,14 @@ void GameScene::BehaviorSceneInitialize() {
 	    textureBackground1_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 	Background2 = Sprite::Create(
 	    textureBackground2_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+
+	//ステージPOP
+	for (size_t i = 0; i < static_cast<size_t>(rockNum - 1); i++) {
+		RockPopCommand();
+		for (const auto& rock : rock_) {
+			rock->SetPosition(rock->GetPosition() - rock->GetInterval());
+		}
+	}
 }
 
 // クリア初期化
@@ -359,15 +368,10 @@ void GameScene::Update() {
 		spriteLight->SetPosition({320, 360});
 
 		// ステージ読み込み
-		if (Move_) {
+		if (careMove_) {
 			LoadRockPopData("stage1");
 
-			for (size_t i = 0; i < static_cast<size_t>(rockNum - 1); i++) {
-				RockPopCommand();
-				for (const auto& rock : rock_) {
-					rock->SetPosition(rock->GetPosition() - rock->GetInterval());
-				}
-			}
+			
 		}
 		break; // switch ブロックを終了
 	case 2:
@@ -376,7 +380,7 @@ void GameScene::Update() {
 		spriteLight->SetPosition({320 * 2, 360});
 
 		// ステージ読み込み
-		if (Move_) {
+		if (careMove_) {
 		}
 		break; // switch ブロックを終了
 	case 3:
@@ -385,7 +389,7 @@ void GameScene::Update() {
 		spriteLight->SetPosition({320 * 3, 360});
 
 		// ステージ読み込み
-		if (Move_) {
+		if (careMove_) {
 		}
 		break; // switch ブロックを終了
 	}
