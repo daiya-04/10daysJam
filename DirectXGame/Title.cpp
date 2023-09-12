@@ -166,11 +166,14 @@ void Title::Update() {
 		break;
 	}
 
-	
+#ifdef _DEBUG
 	ImGui::Begin("Title");
-	
+
 	ImGui::Text("%d", title);
 	ImGui::End();
+#endif // DEBUG
+
+	
 
 }
 

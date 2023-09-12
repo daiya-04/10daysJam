@@ -187,6 +187,13 @@ private: // メンバ変数
     std::unique_ptr<Score> score_;
     const int comboCoolTime = 85;
     int comboCoolTimer = comboCoolTime;
+
+	const int LimitTime = 60 * 30;
+	//int timer = LimitTime;
+	const int sceneChangeCount = 60 * 2;
+	int sceneChangeTimer = sceneChangeCount;
+	const int startTime = 60;
+	int startCount = startTime;
     
     //プレイヤー
     uint32_t playerTexture_ = 0;
