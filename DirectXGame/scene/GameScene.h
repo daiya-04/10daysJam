@@ -48,7 +48,9 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+	Sprite* spriteTransition_ = nullptr; 
 
+	uint32_t textureTransition_;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
@@ -60,4 +62,11 @@ private: // メンバ変数
 	///タイトル
 	std::unique_ptr<Title> title_;
 	bool title = false;
+
+	//ゲームスタート
+	bool start = false;
+
+	// アルファ値
+	float a = 0;
+	bool transition_;
 };

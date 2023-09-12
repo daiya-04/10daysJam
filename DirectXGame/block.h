@@ -43,12 +43,14 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-
+	void SetStart(const float start) { start_ = start; }
 
 	void SetStage(const float stage) { 
 		stage_ = stage;
 	}
 	
+	bool GetMenu() { return menu_;}
+
 	//メニュー初期化
 	void MenuInitialize();
 
@@ -60,27 +62,32 @@ public: // メンバ関数
 
 	void Stage3Initialize();
 
-	void Stage4Initialize();
+	
 
 	void stage1();
 	void stage2();
 	void stage3();
-	void stage4();
+
 
 	void blockBreak();
 
-	void BreackEffect(int lane);
+	void BackGroundMove();
+
+	void BreackEffect();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
+	uint32_t texture_[3];
+	uint32_t textureTrue_[3];
 	uint32_t textureWhite_;
 	uint32_t textureRed_;
 	uint32_t textureBlue_;
 	uint32_t textureGreen_;
 	uint32_t textureYellow_;
+	uint32_t textureHahen_;
 
 	float pos = 720;
 	float kSpeed;
@@ -93,9 +100,9 @@ private: // メンバ変数
 	int yellow = 4;
 	
 	//レーン
-	int lane1[50];
+	
 	int lane2[50];
-	int lane3[50];
+	
 
 	//ブロックの番号
 	enum {
@@ -107,25 +114,19 @@ private: // メンバ変数
 		YELLOWBLOCK  // 5
 	};
 
-	/// ブロック
-	//れーん1
-	Sprite* white1_[50] = {nullptr};
-	Sprite* red1_[50] = {nullptr};
-	Sprite* blue1_[50] = {nullptr};
-	Sprite* yellow1_[50] = {nullptr};
-	Sprite* green1_[50] = {nullptr};
+	/// 破片
+	Sprite* Hahen_[15] = {nullptr};
+	Vector2 hahenPos[15];
+	Vector2 velocity[15] = {0, 0};
+	bool hahen_[15];
+
 	// れーん2
 	Sprite* white2_[50] = {nullptr};
 	Sprite* red2_[50] = {nullptr};
 	Sprite* blue2_[50] = {nullptr};
 	Sprite* yellow2_[50] = {nullptr};
 	Sprite* green2_[50] = {nullptr};
-	// れーん3
-	Sprite* white3_[50] = {nullptr};
-	Sprite* red3_[50] = {nullptr};
-	Sprite* blue3_[50] = {nullptr};
-	Sprite* yellow3_[50] = {nullptr};
-	Sprite* green3_[50] = {nullptr};
+	
 
 
 	// 振る舞い
@@ -145,7 +146,18 @@ private: // メンバ変数
 	bool menu_;
 
 	
-	bool effect_ = false;
-	Vector2 velocity[15];
-	Vector2 effectPos[15];
+	
+
+	//背景
+	Sprite* Background1;
+	Sprite* Background2;
+	uint32_t textureBackground1_;
+	uint32_t textureBackground2_;
+	Vector2 BackgroundPos1_;
+	Vector2 BackgroundPos2_;
+	
+	bool start_ = false;
+
+	//ステージ
+	Sprite* sprite[3] = {nullptr};
 };
