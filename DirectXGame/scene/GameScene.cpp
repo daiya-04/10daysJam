@@ -129,8 +129,8 @@ void GameScene::BehaviorMenuInitialize() {
 // ゲームシーン初期化
 void GameScene::BehaviorSceneInitialize() {
 	cartSpeed = 0.0f;
-	CartPos_ = {200, 580};
-	TirepPos_ = {140, 630};
+	CartPos_ = {-200, 580};
+	TirepPos_ = {-140, 630};
 	careMove_ = false;
 	Move_ = false;
 	textureBackground1_ = TextureManager::Load("title/title1.png");
@@ -139,14 +139,22 @@ void GameScene::BehaviorSceneInitialize() {
 	    textureBackground1_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 	Background2 = Sprite::Create(
 	    textureBackground2_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+
+	for (size_t i = 0; i < static_cast<size_t>(rockNum - 1); i++) {
+		RockPopCommand();
+		for (const auto& rock : rock_) {
+			rock->SetPosition(rock->GetPosition() - rock->GetInterval());
+		}
+	}
+
+	
 }
 
 // クリア初期化
 void GameScene::BehaviorClearInitialize() {}
 
 // オーバー初期化
-void GameScene::BehaviorOverInitialize() {
-}
+void GameScene::BehaviorOverInitialize() {}
 
 //タイトル
 void GameScene::BehaviorTitleUpdata() { 
@@ -359,15 +367,8 @@ void GameScene::Update() {
 		spriteLight->SetPosition({320, 360});
 
 		// ステージ読み込み
-		if (Move_) {
+		if (careMove_) {
 			LoadRockPopData("stage1");
-
-			for (size_t i = 0; i < static_cast<size_t>(rockNum - 1); i++) {
-				RockPopCommand();
-				for (const auto& rock : rock_) {
-					rock->SetPosition(rock->GetPosition() - rock->GetInterval());
-				}
-			}
 		}
 		break; // switch ブロックを終了
 	case 2:
