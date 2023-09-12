@@ -24,7 +24,7 @@ void GameScene::Initialize() {
 	//サウンドデータの読み込み
 	breakSoundData_ = audio_->LoadWave("breakRock.mp3");
 	breakMissSoundData_ = audio_->LoadWave("breakMiss.mp3");
-	
+	stage1BgmData_ = audio_->LoadWave("stage1_BGM.mp3");
 
 	playerSprite_.reset(Sprite::Create(playerTexture_, {}));
 	
@@ -46,6 +46,11 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 
+	if (!audio_->IsPlaying(stage1BgmData_)) {
+		stage1Bgmhandle_ = audio_->PlayWave(stage1BgmData_, true, 0.1f);
+
+	}
+	
 	rock_.remove_if([](const std::unique_ptr<Rock>& rock) {
 		if (rock->isDead()) {
 			return true;
