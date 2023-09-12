@@ -86,39 +86,6 @@ void GameScene::StageSelect() {
 		stage_ = 1;
 	}
 
-	switch (stage_) {
-	case 1:
-		sprite[0] =
-		    Sprite::Create(textureTrue_[0], {320, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
-		spriteLight->SetPosition({320, 360});
-
-		//ステージ読み込み
-		if (Move_) {
-		}
-		break; // switch ブロックを終了
-	case 2:
-		sprite[1] =
-		    Sprite::Create(textureTrue_[1], {320 * 2, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
-		spriteLight->SetPosition({320 * 2, 360});
-
-		// ステージ読み込み
-		if (Move_) {
-		}
-		break; // switch ブロックを終了
-	case 3:
-		sprite[2] =
-		    Sprite::Create(textureTrue_[2], {320 * 3, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
-		spriteLight->SetPosition({320 * 3, 360});
-
-		// ステージ読み込み
-		if (Move_) {
-		}
-		break; // switch ブロックを終了
-	
-	}
-
-
-	
 }
 
 //タイトル初期化
@@ -132,6 +99,7 @@ void GameScene::BehaviorTitleInitialize() {
 
 //メニュー初期化
 void GameScene::BehaviorMenuInitialize() {
+	scene_ = false;
 	a = 0;
 	careMove_ = false;
 	Move_ = false;
@@ -152,6 +120,7 @@ void GameScene::BehaviorMenuInitialize() {
 
 // ゲームシーン初期化
 void GameScene::BehaviorSceneInitialize() {
+
 	cartSpeed = 0.0f;
 	CartPos_ = {200, 580};
 	TirepPos_ = {140, 630};
@@ -175,15 +144,6 @@ void GameScene::BehaviorOverInitialize() {
 //タイトル
 void GameScene::BehaviorTitleUpdata() { 
 	title_->Update();
-	if (careMove_) {
-		transition_ = true;
-	}
-
-	if (start) {
-		title_->SetGame(start);
-		transition_ = false;
-		a = 0;
-	}
 	title = title_->GetTitle();
 	
 	if (title) {
@@ -195,7 +155,7 @@ void GameScene::BehaviorTitleUpdata() {
 void GameScene::BehaviorMenuUpdata() { 
 	title_->Update();
 	StageSelect(); 
-	if (careMove_) {
+	if (scene_) {
 		if (a < 1) {
 			a += 0.01f;
 
@@ -293,6 +253,38 @@ void GameScene::Update() {
 	CartMove();
 
 	spriteTransition_->SetColor({1.0f, 1.0f, 1.0f, a});	
+
+
+	switch (stage_) {
+	case 1:
+		sprite[0] =
+		    Sprite::Create(textureTrue_[0], {320, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+		spriteLight->SetPosition({320, 360});
+
+		// ステージ読み込み
+		if (Move_) {
+		}
+		break; // switch ブロックを終了
+	case 2:
+		sprite[1] =
+		    Sprite::Create(textureTrue_[1], {320 * 2, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+		spriteLight->SetPosition({320 * 2, 360});
+
+		// ステージ読み込み
+		if (Move_) {
+		}
+		break; // switch ブロックを終了
+	case 3:
+		sprite[2] =
+		    Sprite::Create(textureTrue_[2], {320 * 3, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+		spriteLight->SetPosition({320 * 3, 360});
+
+		// ステージ読み込み
+		if (Move_) {
+		}
+		break; // switch ブロックを終了
+	}
+
 
 	if (behaviorRequest_) {
 		// 振る舞い変更

@@ -160,4 +160,7 @@ private: // メンバ変数
 	uint32_t textureBackground2_;
 	Vector2 BackgroundPos1_;
 	Vector2 BackgroundPos2_;
+
+	//シーン遷移
+	bool scene_ = false;
 };
