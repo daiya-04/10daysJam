@@ -13,18 +13,15 @@ void Block::MenuInitialize(){
 		yellow2_[i]->SetPosition({720 + (float(i) * 50), (360)});
 		
 	}
-	for (int i = 0; i < 3; i++) {
-		sprite[i]->SetPosition({float(320 + 320 * i), 360});
-	}
+	
 	menu_ = true;
 	stage_ = 1;
+	
+
 };
 void Block::MenuUpdata(){ 
 	
-	for (int i = 0; i < 3; i++) {
-		sprite[i] = Sprite::Create(
-		    texture_[i], {float(320 + 320 * i),360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
-	}
+	
 
 	if (stage_ == 1 && start_) {
 		behaviorRequest_ = Behavior::kStage1;
@@ -34,17 +31,7 @@ void Block::MenuUpdata(){
 		behaviorRequest_ = Behavior::kStage3;
 	}
 
-	if (stage_ <= 1 ) {
-		sprite[0] = Sprite::Create(
-		    textureTrue_[0], {320, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
-	} else if (stage_ <= 2) {
-		sprite[1] =
-		    Sprite::Create(textureTrue_[1], {320 * 2, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
-	} else if (stage_ <= 3) {
-		sprite[2] =
-		    Sprite::Create(textureTrue_[2], {320*3, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
-	} 
-
+	
 	
 	
 };
@@ -55,7 +42,7 @@ void Block::Stage1Initialize(){
 
 	for (int i = 0; i < 15; ++i) {
 		velocity[i] = {0, 0};
-		hahenPos[i] = {75, 360};
+		hahenPos[i] = {90, 360};
 		hahen_[i] = false;
 	}
 	// レーン１,2,3
@@ -77,17 +64,21 @@ void Block::Stage1Initialize(){
 	Background2 = Sprite::Create(textureBackground2_, {1280/2,720/2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 	BackgroundPos1_ = {1280 / 2, 720 / 2};
 	BackgroundPos2_ = {1920, 720 / 2};
-	
+	a = 1;
 };
 void  Block::stage1(){
+	spriteTransition_->SetColor({1.0f, 1.0f, 1.0f, a});
 	Background1->SetPosition(BackgroundPos1_);
 	Background2->SetPosition(BackgroundPos2_);
 	BackGroundMove();
 	blockBreak();
 	BreackEffect();
 	
-	for (int i = 0; i < 50; i++) {
+	if (a > 0) {
+		a -= 0.01f;
+	}
 
+	for (int i = 0; i < 50; i++) {
 		red2_[i]->SetPosition({pos + (float(i) * 65), (360)});
 		blue2_[i]->SetPosition({pos + (float(i) * 65), (360)});
 		green2_[i]->SetPosition({pos + (float(i) * 65), (360)});
@@ -96,6 +87,7 @@ void  Block::stage1(){
 	
 	if (input_->TriggerKey(DIK_SPACE)) {
 		behaviorRequest_ = Behavior::kRoot;
+		
 	}
 
 	
@@ -203,7 +195,7 @@ void Block::blockBreak() {
 						hahen_[j] = true;
 						float numberX = (rand() % 11 - 4) * 3.0f;
 						float numberY = (rand() % 11 + 3) * 3.0f;
-						velocity[i] = {numberX, numberY};
+						velocity[j] = {numberX, numberY};
 					}
 				}
 				break;
@@ -220,7 +212,7 @@ void Block::blockBreak() {
 					if (!hahen_[j]) {
 						float numberX = (rand() % 11 - 5) * 3.0f;
 						float numberY = (rand() % 11 + 3) * 3.0f;
-						velocity[i] = {numberX, numberY};
+						velocity[j] = {numberX, numberY};
 						hahen_[j] = true;
 					}
 				}
@@ -238,7 +230,7 @@ void Block::blockBreak() {
 					if (!hahen_[j]) {
 						float numberX = (rand() % 11 - 5) * 3.0f;
 						float numberY = (rand() % 11 + 3) * 3.0f;
-						velocity[i] = {numberX, numberY};
+						velocity[j] = {numberX, numberY};
 						hahen_[j] = true;
 					}
 				}
@@ -256,7 +248,7 @@ void Block::blockBreak() {
 					if (!hahen_[j]) {
 						float numberX = (rand() % 11 - 5) * 3.0f;
 						float numberY = (rand() % 11 + 3) * 3.0f;
-						velocity[i] = {numberX, numberY};
+						velocity[j] = {numberX, numberY};
 						hahen_[j] = true;
 					}
 				}
@@ -279,10 +271,12 @@ void Block::BreackEffect() {
 
 	for (int i = 0; i < 15; ++i) {
 		Hahen_[i]->SetPosition(hahenPos[i]);
+
 		if (hahenPos[i].x <= 0 || hahenPos[i].x >= 1280 || hahenPos[i].y <= 0 ||
 		    hahenPos[i].y >= 720) {
 			hahen_[i] = false;
-			hahenPos[i] = {75, 360};
+			hahenPos[i] = {90, 360};
+			velocity[i] = {0, 0};
 		}
 		if (hahen_[i]) {
 			velocity[i].y -= 2.0f;
@@ -302,12 +296,7 @@ Block::Block() {};
 Block::~Block(){};
 
 void Block::Initialize() {
-	texture_[0] = TextureManager::Load("title/stage1.png");
-	texture_[1] = TextureManager::Load("title/stage2.png");
-	texture_[2] = TextureManager::Load("title/stage3.png");
-	textureTrue_[0] = TextureManager::Load("title/TrueStage1.png");
-	textureTrue_[1] = TextureManager::Load("title/TrueStage2.png");
-	textureTrue_[2] = TextureManager::Load("title/TrueStage3.png");
+	
 	textureWhite_ = TextureManager::Load("block/white.png");
 	textureRed_ = TextureManager::Load("block/red.png");
 	textureBlue_ = TextureManager::Load("block/blue.png");
@@ -315,7 +304,11 @@ void Block::Initialize() {
 	textureYellow_ = TextureManager::Load("block/yellow.png");
 	textureHahen_ = TextureManager::Load("block/hahen.png");
 	
+	textureTransition_ = TextureManager::Load("title/black.png");
+	spriteTransition_ = Sprite::Create(
+	    textureTransition_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 0.0f}, {0.5f, 0.5f});
 	
+
 	// ブロックの生成
 	for (int i = 0; i < 50; i++) {
 		
@@ -335,10 +328,7 @@ void Block::Initialize() {
 		    Sprite::Create(textureHahen_, {75, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 	}
 
-	for (int i = 0; i < 3; i++) {
-		sprite[i] = Sprite::Create(
-		    texture_[i], {-1280, 0}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
-	}
+	
 
 	input_ = Input::GetInstance();
 	
@@ -393,7 +383,7 @@ void Block::Update() {
 
 	ImGui::Begin("Debug1");
 	ImGui::Text("RED = 2\nBLUE = 3\nGREEN = 4\nYELLOW = 5\nMunu%d",menu_);
-	ImGui::Text("%d", hahen_[13]);
+	ImGui::Text("%f %f", velocity[0].x, velocity[0].y);
 	ImGui::Text("%f", hahenPos[0].x);
 	ImGui::End();
 }
@@ -406,12 +396,7 @@ void Block::Draw() {
 		Background2->Draw();
 	}
 
-	if (menu_) {
-		for (int i = 0; i < 3; i++) {
-			sprite[i]->Draw();
-		}
-
-	} else {
+	if (!menu_){
 		
 
 		for (int i = 0; i < 50; i++) {
@@ -448,4 +433,6 @@ void Block::Draw() {
 			Hahen_[i]->Draw();
 		}
 	}
+
+	spriteTransition_->Draw();
 }

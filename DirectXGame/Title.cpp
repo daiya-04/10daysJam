@@ -19,7 +19,7 @@ void Title::TitleInitialize() {
 	MenuPos_ = {1920, 720 / 2};
 	TirepPos_ = {140, 600};
 	move_ = true;
-	z = false;
+	
 }
 
 void Title::TitleMove() { 
@@ -41,7 +41,6 @@ void Title::TitleMove() {
 	spriteTitle->SetPosition(pos); 
 }
 
-
 void Title::MenuMove() {
 	for (int i = 0; i < 3; i++) {
 		sprite[i]->SetPosition({MenuPos_.x + 320*i, MenuPos_.y});
@@ -58,10 +57,12 @@ void Title::MenuMove() {
 }
 
 void Title::MenuInitialize(){
-	CartPos_ = {200, 550};
+	CartPos_ = {200, 580};
+	TirepPos_ = {140, 630};
 	careMove_ = false;
-	
+	Move_ = false;
 };
+
 void Title::CartMove() { 
 	
 	spriteCart->SetPosition(CartPos_);
@@ -89,13 +90,13 @@ void Title::CartMove() {
 
 	if (input_->TriggerKey(DIK_SPACE) && !careMove_ && title) {
 		cartSpeed = 10.0f;
-		
-
+		Move_ = true;
 	}
 
 	if (CartPos_.x > 1480) {
 		behaviorRequest_ = Behavior::kGameScene;
 		careMove_ = true;
+		
 	}
 	
 	
@@ -103,8 +104,17 @@ void Title::CartMove() {
 
 }
 
-void Title::GameSceneInitialize() {
-	
+void Title::GameSceneInitialize() { 	
+	CartPos_ = {200, 550};
+	TirepPos_ = {140, 600};
+	careMove_ = false;
+	game_ = true;
+	Move_ = false;
+}
+void Title::GameSceneUpdata() {
+	if (!game_) {
+		behaviorRequest_ = Behavior::kMenu;
+	}
 }
 
 void Title::Effect() {
@@ -131,11 +141,12 @@ void Title::Initialize() {
 	texture_[0] = TextureManager::Load("title/stage1.png");
 	texture_[1] = TextureManager::Load("title/stage2.png");
 	texture_[2] = TextureManager::Load("title/stage3.png");
-	textureBackground1_ = TextureManager::Load("title/title1.png");
-	textureBackground2_ = TextureManager::Load("title/title2.png");
+	textureBackground1_ = TextureManager::Load("block/backGround.png");
+	textureBackground2_ = TextureManager::Load("block/backGround.png");
 	textureTitle_ = TextureManager::Load("title/title.png");
 	textureCart_ = TextureManager::Load("title/cart.png");
 	textureTire_ = TextureManager::Load("title/tire.png");
+	
 	
 
 	for (int i = 0; i < 3; i++) {
@@ -195,10 +206,10 @@ void Title::Update() {
 			MenuInitialize();
 			break;
 		case Behavior::kMenu:
-			
+			//MenuInitialize();
 			break;
 		case Behavior::kGameScene:
-			
+			GameSceneUpdata();
 			break;
 		
 		}
@@ -217,11 +228,17 @@ void Title::Update() {
 		CartMove();
 		break;
 	case Behavior::kGameScene:
-		
+		GameSceneInitialize();
 		break;
 	}
 
 	
+	ImGui::Begin("Title");
+	ImGui::Text("%f", CartPos_.x);
+	ImGui::Text("%f", CartPos_.y);
+	ImGui::Text("careMove_%d", careMove_);
+	ImGui::Text("%d", title);
+	ImGui::End();
 
 }
 
@@ -235,11 +252,12 @@ void Title::Draw() {
 			sprite[i]->Draw();
 		}
 	
+		
 	}
+
 	spriteCart->Draw();
 	for (int i = 0; i < 2; i++) {
 		spriteTire[i]->Draw();
-	
 	}
 	
 }

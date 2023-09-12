@@ -80,14 +80,14 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
-	uint32_t texture_[3];
-	uint32_t textureTrue_[3];
+	
 	uint32_t textureWhite_;
 	uint32_t textureRed_;
 	uint32_t textureBlue_;
 	uint32_t textureGreen_;
 	uint32_t textureYellow_;
 	uint32_t textureHahen_;
+	
 
 	float pos = 720;
 	float kSpeed;
@@ -145,8 +145,11 @@ private: // メンバ変数
 	float stage_;
 	bool menu_;
 
-	
-	
+	//シーン遷移
+	Sprite* spriteTransition_ = nullptr; 
+	uint32_t textureTransition_;
+	float a = 0;
+
 
 	//背景
 	Sprite* Background1;
@@ -158,6 +161,5 @@ private: // メンバ変数
 	
 	bool start_ = false;
 
-	//ステージ
-	Sprite* sprite[3] = {nullptr};
+	
 };

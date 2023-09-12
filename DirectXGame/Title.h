@@ -33,11 +33,18 @@ public:
 
 	bool GetCart() { return careMove_; };
 
+	bool GetMove() { return Move_; };
+
 	void TitleInitialize();
 
 	void MenuInitialize();
 
 	void GameSceneInitialize();
+	void GameSceneUpdata();
+
+	void SetGame(const bool game) { 
+		game_ = game;
+	}
 
 private:
 	Input* input_ = nullptr;
@@ -48,6 +55,7 @@ private:
 	Sprite* spriteTitle;
 	Sprite* spriteCart;
 	Sprite* spriteTire[2];
+
 	
 	
 	uint32_t texture_[3];
@@ -56,6 +64,7 @@ private:
 	uint32_t textureTitle_;
 	uint32_t textureCart_;
 	uint32_t textureTire_;
+	
 
 	Vector2 pos;
 	Vector2 BackgroundPos1_;
@@ -83,6 +92,7 @@ private:
 	//全体の動き
 	bool move_;
 	//トロッコの動き
+	bool Move_ = false;
 	bool careMove_ = false;
 
 	// 振る舞い
@@ -96,5 +106,5 @@ private:
 	// 次の振る舞いリクエスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 
-	bool z = false;
+	bool game_ = false;
 };
