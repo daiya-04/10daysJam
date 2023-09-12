@@ -51,8 +51,7 @@ void GameScene::BackGroundMove() {
 }
 
 void GameScene::StageSelect() {
-	block_->SetStage(stage_);
-	block_->SetStart(start);
+	
 
 	--lightTime_;
 	spriteLight->SetSize(lightSize_);
@@ -129,6 +128,12 @@ void GameScene::BehaviorMenuInitialize() {
 	for (int i = 0; i < 3; i++) {
 		sprite[i]->SetPosition({float(320 + 320 * i), 360});
 	}
+	textureBackground1_ = TextureManager::Load("block/backGround.png");
+	textureBackground2_ = TextureManager::Load("block/backGround.png");
+	Background1 = Sprite::Create(
+	    textureBackground1_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+	Background2 = Sprite::Create(
+	    textureBackground2_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 }
 
 // ゲームシーン初期化
@@ -161,7 +166,6 @@ void GameScene::BehaviorTitleUpdata() {
 	}
 
 	if (start) {
-		start = block_->GetMenu();
 		title_->SetGame(start);
 		transition_ = false;
 		a = 0;
@@ -190,7 +194,10 @@ void GameScene::BehaviorMenuUpdata() {
 
 //ゲームシーン
 void GameScene::BehaviorSceneUpdata() { 
-	block_->Update();
+		
+	if (input_->TriggerKey(DIK_1)) {
+		behaviorRequest_ = Behavior::kMenuScene;
+	}
 	if (a >= 0) {
 		a -= 0.01f;
 	} else {
@@ -238,9 +245,6 @@ void GameScene::Initialize() {
 	title_ = std::make_unique<Title>();
 	title_->Initialize();
 
-	block_ = std::make_unique<Block>();
-	// ブロックの初期化
-	block_->Initialize();
 	
 	textureTransition_ = TextureManager::Load("title/black.png");
 	spriteTransition_ = Sprite::Create(textureTransition_, {1280/2,720/2}, {1.0f, 1.0f, 1.0f, 0.0f}, {0.5f, 0.5f});
@@ -274,20 +278,7 @@ void GameScene::Update() {
 	BackGroundMove();
 	CartMove();
 
-	
-	spriteTransition_->SetColor({1.0f, 1.0f, 1.0f, a});
-	
-	
-	
-	if (a >= 1.0f) {
-		
-
-	} else if (transition_ && !start) {
-		a += 0.01f;
-	}
-
-	
-	
+	spriteTransition_->SetColor({1.0f, 1.0f, 1.0f, a});	
 
 	if (behaviorRequest_) {
 		// 振る舞い変更
@@ -397,7 +388,7 @@ void GameScene::Draw() {
 
 
 	title_->Draw();
-	block_->Draw();
+	
 
 
 	

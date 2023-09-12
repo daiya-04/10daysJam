@@ -116,7 +116,6 @@ private: // メンバ変数
 	float tireRotation;
 
 	/// ブロック
-	std::unique_ptr<Block> block_;
 	float stage_;
 
 	///タイトル
