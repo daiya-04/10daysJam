@@ -36,7 +36,7 @@ void GameScene::CartMove() {
 	}
 
 	if (CartPos_.x > 1480) {
-		careMove_ = true;
+		scene_ = true;
 	}
 }
 
