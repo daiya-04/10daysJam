@@ -51,8 +51,6 @@ void GameScene::BackGroundMove() {
 }
 
 void GameScene::StageSelect() {
-	
-
 	--lightTime_;
 	spriteLight->SetSize(lightSize_);
 
@@ -73,26 +71,12 @@ void GameScene::StageSelect() {
 		lightSize_.y += 1.0f;
 	}
 
-	if (stage_ <= 1) {
-		sprite[0] =
-		    Sprite::Create(textureTrue_[0], {320, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
-		spriteLight->SetPosition({320, 360});
-	} else if (stage_ <= 2) {
-		sprite[1] =
-		    Sprite::Create(textureTrue_[1], {320 * 2, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
-		spriteLight->SetPosition({320 * 2, 360});
-	} else if (stage_ <= 3) {
-		sprite[2] =
-		    Sprite::Create(textureTrue_[2], {320 * 3, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
-		spriteLight->SetPosition({320 * 3, 360});
-	}
-
 	//ステージ選択
 	if (!Move_) {
 		if (input_->TriggerKey(DIK_LEFTARROW)) {
-			stage_ -= 1.0f;
+			stage_ -= 1;
 		} else if (input_->TriggerKey(DIK_RIGHTARROW)) {
-			stage_ += 1.0f;
+			stage_ += 1;
 		}
 	}
 
@@ -102,7 +86,37 @@ void GameScene::StageSelect() {
 		stage_ = 1;
 	}
 
+	switch (stage_) {
+	case 1:
+		sprite[0] =
+		    Sprite::Create(textureTrue_[0], {320, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+		spriteLight->SetPosition({320, 360});
+
+		//ステージ読み込み
+		if (Move_) {
+		}
+		break; // switch ブロックを終了
+	case 2:
+		sprite[1] =
+		    Sprite::Create(textureTrue_[1], {320 * 2, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+		spriteLight->SetPosition({320 * 2, 360});
+
+		// ステージ読み込み
+		if (Move_) {
+		}
+		break; // switch ブロックを終了
+	case 3:
+		sprite[2] =
+		    Sprite::Create(textureTrue_[2], {320 * 3, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+		spriteLight->SetPosition({320 * 3, 360});
+
+		// ステージ読み込み
+		if (Move_) {
+		}
+		break; // switch ブロックを終了
 	
+	}
+
 
 	
 }

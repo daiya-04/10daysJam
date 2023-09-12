@@ -115,8 +115,8 @@ private: // メンバ変数
 	float cartSpeed = 0.0f;
 	float tireRotation;
 
-	/// ブロック
-	float stage_;
+	/// ステージ
+	int stage_;
 
 	///タイトル
 	std::unique_ptr<Title> title_;
