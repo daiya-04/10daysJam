@@ -151,7 +151,13 @@ void GameScene::BehaviorSceneInitialize() {
 }
 
 // クリア初期化
-void GameScene::BehaviorClearInitialize() {}
+void GameScene::BehaviorClearInitialize() {
+	cartSpeed = 0.0f;
+	CartPos_ = {-200, 580};
+	TirepPos_ = {-140, 630};
+	careMove_ = false;
+	Move_ = false;
+}
 
 // オーバー初期化
 void GameScene::BehaviorOverInitialize() {}
@@ -263,7 +269,9 @@ void GameScene::BehaviorSceneUpdata() {
 }
 
 //クリア
-void GameScene::BehaviorClearUpdata() {}
+void GameScene::BehaviorClearUpdata() {
+
+}
 
 // オーバー
 void GameScene::BehaviorOverUpdata() {}
@@ -484,28 +492,45 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-	
 	Background1->Draw();
 	Background2->Draw();
-	spriteCart->Draw();
-
-	for (int i = 0; i < 2; i++) {
-		spriteTire[i]->Draw();
-	}
-	spriteLight->Draw();
-	for (int i = 0; i < 3; i++) {
-		sprite[i]->Draw();
-	}
-
-	for (const auto& rock : rock_) {
-	    rock->Draw();
-    }
-    player_->Draw();
-    score_->Draw();
-
-
-	title_->Draw();
 	
+
+
+
+	switch (behavior_) {
+	case Behavior::kTitle:
+	default:
+		title_->Draw();
+		spriteCart->Draw();
+		for (int i = 0; i < 2; i++) {
+			spriteTire[i]->Draw();
+		}
+		break;
+	case Behavior::kMenuScene:
+		spriteCart->Draw();
+		for (int i = 0; i < 2; i++) {
+			spriteTire[i]->Draw();
+		}
+		spriteLight->Draw();
+		for (int i = 0; i < 3; i++) {
+			sprite[i]->Draw();
+		}
+		break;
+	case Behavior::kGameScene:
+		for (const auto& rock : rock_) {
+			rock->Draw();
+		}
+		player_->Draw();
+		score_->Draw();
+		break;
+	case Behavior::kGameClear:
+		BehaviorClearUpdata();
+		break;
+	case Behavior::kGameOver:
+		BehaviorOverUpdata();
+		break;
+	}
 
 	spriteTransition_->Draw();
 	
