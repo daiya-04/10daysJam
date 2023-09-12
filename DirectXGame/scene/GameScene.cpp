@@ -20,6 +20,7 @@ void GameScene::Initialize() {
 	rockHardTexture_ = TextureManager::Load("hardRock.png");
 	stage1_bgTexture_ = TextureManager::Load("1s.png");
 	stage2_bgTexture_ = TextureManager::Load("2s.png");
+	numberTexture_ = TextureManager::Load("number.png");
 
 	//サウンドデータの読み込み
 	breakSoundData_ = audio_->LoadWave("breakRock.mp3");
@@ -41,6 +42,9 @@ void GameScene::Initialize() {
 	}
 
 	backGround_.reset(Sprite::Create(stage1_bgTexture_, {}));
+
+	score_ = std::make_unique<Score>();
+	score_->Initialize(numberTexture_);
 
 }
 
@@ -74,6 +78,7 @@ void GameScene::Update() {
 	for (const auto& rock : rock_) {
 		rock->Update();
 	}
+	score_->Update();
 
 	if (moveRequest_) {
 		Vec2 interval = {1280.0f / 8.0f, 0.0f};
@@ -99,6 +104,9 @@ void GameScene::Update() {
 
 	if (scroll.x <= -1280.0f) {
  		scroll.x = 0.0f;
+	}
+	if (--comboCoolTimer <= 0) {
+		score_->ComboReset();
 	}
 
 	backGround_->SetPosition({position_.x + scroll.x, position_.y + scroll.y});
@@ -150,6 +158,7 @@ void GameScene::Draw() {
 		rock->Draw();
 	}
 	player_->Draw();
+	score_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -172,11 +181,15 @@ void GameScene::CollisionCheck() {
 				RockPopCommand();
 				moveRequest_ = true;
 				breakSoundHandle_ = audio_->PlayWave(breakSoundData_, false, 0.5f);
+				score_->AddCombo();
+				score_->AddScore();
 			} else if (player_->GetType() == Type::Soft && rocks->GetType() == Type::Hard) {
 				if (!audio_->IsPlaying(breakMissSoundHandle_)) {
 					breakMissSoundHandle_ = audio_->PlayWave(breakMissSoundData_, false, 0.5f);
 				}
+				score_->ComboReset();
 			}
+			comboCoolTimer = comboCoolTime;
 		}
 		
 	}
