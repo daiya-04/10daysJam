@@ -163,7 +163,7 @@ void GameScene::BehaviorTitleUpdata() {
 void GameScene::BehaviorMenuUpdata() { 
 	title_->Update();
 	StageSelect(); 
-	if (scene_) {
+	if (careMove_) {
 		if (a < 1) {
 			a += 0.01f;
 
@@ -505,10 +505,6 @@ void GameScene::Draw() {
 
 	title_->Draw();
 	
-
-
-	
-
 
 	spriteTransition_->Draw();
 	
