@@ -198,6 +198,8 @@ private: // メンバ変数
 	int sceneChangeTimer = sceneChangeCount;
 	const int startTime = 60;
 	int startCount = startTime;
+	uint32_t finishTexture_ = 0;
+	std::unique_ptr<Sprite> finishSprite_;
     
     //プレイヤー
     uint32_t playerTexture_ = 0;

@@ -328,6 +328,7 @@ void GameScene::Initialize() {
     stage1_bgTexture_ = TextureManager::Load("1s.png");
     stage2_bgTexture_ = TextureManager::Load("2s.png");
     numberTexture_ = TextureManager::Load("number.png");
+	finishTexture_ = TextureManager::Load("finish.png");
 
 	//サウンドデータの読み込み
     breakSoundData_ = audio_->LoadWave("breakRock.mp3");
@@ -343,6 +344,8 @@ void GameScene::Initialize() {
 
     score_ = std::make_unique<Score>();
     score_->Initialize(numberTexture_);
+
+	finishSprite_.reset(Sprite::Create(finishTexture_, {}));
 
 	//看板
 	textureBoard_ = TextureManager::Load("signboard.png");
@@ -564,6 +567,9 @@ void GameScene::Draw() {
 		}
 		player_->Draw();
 		score_->Draw();
+		if (score_->GetTimer() <= 0) {
+			finishSprite_->Draw();
+		}
 		break;
 	case Behavior::kGameClear:
 		score_->ResultScoreDraw();
