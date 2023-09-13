@@ -38,7 +38,7 @@ void Title::MenuMove() {
 	if (effect ) {
 		MenuPos_.x -= 4;
 	}
-	if (MenuPos_.x <= 320) {
+	if (MenuPos_.x < 320) {
 		MenuPos_.x = 320;
 		title = true;
 		behaviorRequest_ = Behavior::kMenu;
@@ -84,6 +84,8 @@ void Title::Effect() {
 }
 
 void Title::Initialize() { 
+	audio_ = Audio::GetInstance();
+
 	texture_[0] = TextureManager::Load("title/stage1.png");
 	texture_[1] = TextureManager::Load("title/stage2.png");
 	texture_[2] = TextureManager::Load("title/stage3.png");
@@ -103,15 +105,15 @@ void Title::Initialize() {
 		
 	}
 	
-
+	decisionSEData_ = audio_->LoadWave("decision.mp3");
 	
 	input_ = Input::GetInstance();
 
 	time = 20;
 	pos = {1540 , 720 / 2};
 	
-	
-	
+	spaceCharTexture_ = TextureManager::Load("space.png");
+	spaceCharSprite_ = Sprite::Create(spaceCharTexture_, {440, 500});
 
 	behaviorRequest_ = Behavior::kTitle;
 }
@@ -132,6 +134,7 @@ void Title::Update() {
 		if (input_->TriggerKey(DIK_SPACE)) {
 			move_ = true;
 			effect = true;
+			decisionSEHandle_ = audio_->PlayWave(decisionSEData_, false, 0.1f);
 		}
 	}
 	
@@ -176,7 +179,7 @@ void Title::Update() {
 #ifdef _DEBUG
 	ImGui::Begin("Title");
 
-	ImGui::Text("%d", title);
+	ImGui::Text("%f", MenuPos_.x);
 	ImGui::End();
 #endif // DEBUG
 
@@ -194,6 +197,10 @@ void Title::Draw() {
 		}
 	
 		
+	}
+	
+	if (pos.x == 640) {
+		spaceCharSprite_->Draw();
 	}
 
 	spriteBoard_->Draw();

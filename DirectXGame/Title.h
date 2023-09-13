@@ -2,6 +2,7 @@
 #include <Sprite.h>
 #include <Input.h> 
 #include <optional>
+#include <Audio.h>
 
 class Title {
 public:
@@ -54,7 +55,8 @@ private:
 	uint32_t textureBackground1_;
 	uint32_t textureBackground2_;
 	uint32_t textureTitle_;
-	
+	uint32_t spaceCharTexture_ = 0;
+	Sprite* spaceCharSprite_;
 	// 看板
 	uint32_t textureBoard_;
 	Sprite* spriteBoard_;
@@ -86,4 +88,9 @@ private:
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 
 	bool game_ = false;
+
+	// 決定音
+	Audio* audio_ = nullptr;
+	uint32_t decisionSEData_ = 0;
+	uint32_t decisionSEHandle_ = 0;
 };

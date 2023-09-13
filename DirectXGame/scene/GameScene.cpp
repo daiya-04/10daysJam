@@ -294,6 +294,7 @@ void GameScene::BehaviorSceneUpdata() {
 void GameScene::BehaviorClearUpdata() {
 	order = 1;
 	if (input_->TriggerKey(DIK_SPACE)) {
+		decisionSEHandle_ = audio_->PlayWave(decisionSEData_, false, 0.1f);
 		// BGM停止
 		audio_->StopWave(stage1Bgmhandle_);
 		behaviorRequest_ = Behavior::kMenuScene;
@@ -564,6 +565,7 @@ void GameScene::Draw() {
 	case Behavior::kTitle:
 	default:
 		title_->Draw();
+		
 		spriteCart->Draw();
 		for (int i = 0; i < 2; i++) {
 			spriteTire[i]->Draw();
