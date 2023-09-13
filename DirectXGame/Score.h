@@ -8,7 +8,7 @@
 class Score {
 private:
 	//スコアの桁数
-	static const int kScoreDigits = 8;
+	static const int kScoreDigits = 6;
 	//コンボの桁数
 	static const int kComboDigits = 3;
 	//時間の桁数
