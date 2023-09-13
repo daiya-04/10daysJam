@@ -308,7 +308,7 @@ void GameScene::BehaviorClearUpdata() {
 		}
 		return false;
 	});
-
+	spaceCharSprite_->SetPosition({640.0f, 576.0f});
 }
 
 // オーバー
@@ -337,6 +337,7 @@ void GameScene::Initialize() {
     stage2_bgTexture_ = TextureManager::Load("2s.png");
     numberTexture_ = TextureManager::Load("number.png");
 	finishTexture_ = TextureManager::Load("finish.png");
+	spaceCharTexture_ = TextureManager::Load("space.png");
 
 	//サウンドデータの読み込み
     breakSoundData_ = audio_->LoadWave("breakRock.mp3");
@@ -356,6 +357,8 @@ void GameScene::Initialize() {
     score_->Initialize(numberTexture_);
 
 	finishSprite_.reset(Sprite::Create(finishTexture_, {}));
+	spaceCharSprite_.reset(Sprite::Create(spaceCharTexture_, {}));
+	spaceCharSprite_->SetAnchorPoint({0.5f, 0.5f});
 
 	//看板
 	textureBoard_ = TextureManager::Load("signboard.png");
@@ -589,6 +592,7 @@ void GameScene::Draw() {
 		break;
 	case Behavior::kGameClear:
 		score_->ResultScoreDraw();
+		spaceCharSprite_->Draw();
 		break;
 	case Behavior::kGameOver:
 		BehaviorOverUpdata();

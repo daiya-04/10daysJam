@@ -200,6 +200,8 @@ private: // メンバ変数
 	int startCount = startTime;
 	uint32_t finishTexture_ = 0;
 	std::unique_ptr<Sprite> finishSprite_;
+	uint32_t spaceCharTexture_ = 0;
+	std::unique_ptr<Sprite> spaceCharSprite_;
     
     //プレイヤー
     uint32_t playerTexture_ = 0;
