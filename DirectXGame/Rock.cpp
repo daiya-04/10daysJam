@@ -13,7 +13,7 @@ void Rock::Initialize(uint32_t texture, const Vec2& position, Type type) {
 	position_.y = 600.0f - (size_.y / 2.0f);
 	sprite_->SetSize({size_.x, size_.y});
 	sprite_->SetAnchorPoint({0.5f, 0.5f});
-	
+	sprite_->SetPosition({position_.x, position_.y});
 
 }
 

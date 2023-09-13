@@ -161,6 +161,7 @@ void Player::SceneInitialize() {
 
 	position_ = {200.0f, 600.0f - (size_.y / 2.0f)};
 	sprite_->SetPosition({position_.x, position_.y});
+	player_->SetPosition({playerPos_.x, playerPos_.y});
 	playerBehaviorRequest_ = Behavior::kRoot;
 	RootInitialize();
 	key_ = false;
