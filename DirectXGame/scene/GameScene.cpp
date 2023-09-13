@@ -421,7 +421,7 @@ void GameScene::Update() {
 
 		// ステージ読み込み
 		if (careMove_) {
-			LoadRockPopData("stage1");
+			LoadRockPopData("stage2");
 		}
 		break; // switch ブロックを終了
 	case 3:
@@ -431,7 +431,7 @@ void GameScene::Update() {
 
 		// ステージ読み込み
 		if (careMove_) {
-			LoadRockPopData("stage1");
+			LoadRockPopData("stage3");
 		}
 		break; // switch ブロックを終了
 	}
