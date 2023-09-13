@@ -32,7 +32,7 @@ void Score::Initialize(uint32_t texture) {
 		resultScore_[i].reset(Sprite::Create(texture_, {}));
 		resultScore_[i]->SetSize({resultScoreSize.x, resultScoreSize.y});
 		resultScore_[i]->SetTextureRect({}, {texSize.x, texSize.y});
-		resultScore_[i]->SetPosition({250.0f + resultScoreSize.x * (float)i, 270.0f});
+		resultScore_[i]->SetPosition({352.0f + resultScoreSize.x * (float)i, 270.0f});
 	}
 	//タイマー
 	for (size_t i = 0; i < kTimeDigits; i++) {

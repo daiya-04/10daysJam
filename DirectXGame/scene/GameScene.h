@@ -234,4 +234,14 @@ private: // メンバ変数
     uint32_t breakMissSoundHandle_ = 0;
     uint32_t breakSoundHandle_ = 0;
     uint32_t stage1Bgmhandle_ = 0;
+
+	//タイトルBGM
+	uint32_t titleBgmData_ = 0;
+	uint32_t titleBGMHandle_ = 0;
+
+	//決定音
+	uint32_t decisionSEData_ = 0;
+	uint32_t decisionSEHandle_ = 0;
+	
+
 };

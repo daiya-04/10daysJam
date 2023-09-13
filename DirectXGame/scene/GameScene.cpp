@@ -31,6 +31,7 @@ void GameScene::CartMove() {
 	tireRotation += 0.3f;
 
 	if (input_->TriggerKey(DIK_SPACE) && !careMove_ && title) {
+		decisionSEHandle_ = audio_->PlayWave(decisionSEData_, false, 0.1f);
 		cartSpeed = 10.0f;
 		Move_ = true;
 	}
@@ -103,11 +104,17 @@ void GameScene::BehaviorTitleInitialize() {
 	BackgroundPos2_ = {1920, 720 / 2};
 	CartPos_ = {200, 580};
 	TirepPos_ = {140, 630};
-	
+	if (!audio_->IsPlaying(titleBGMHandle_)) {
+		titleBGMHandle_ = audio_->PlayWave(titleBgmData_, true, 0.1f);
+	}
 }
 
 //メニュー初期化
 void GameScene::BehaviorMenuInitialize() {
+	if (!audio_->IsPlaying(titleBGMHandle_)) {
+		titleBGMHandle_ = audio_->PlayWave(titleBgmData_, true, 0.1f);
+	}
+
 	if (careMove_) {
 		CartPos_ = {200, 580};
 		TirepPos_ = {140, 630};
@@ -134,10 +141,11 @@ void GameScene::BehaviorMenuInitialize() {
 
 // ゲームシーン初期化
 void GameScene::BehaviorSceneInitialize() {
+	audio_->StopWave(titleBGMHandle_);
+
 	cartSpeed = 0.0f;
 	Move_ = false;
-	textureBackground1_ = TextureManager::Load("title/title1.png");
-	textureBackground2_ = TextureManager::Load("title/title2.png");
+	
 	Background1 = Sprite::Create(
 	    textureBackground1_, {1280 / 2, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 	Background2 = Sprite::Create(
@@ -333,7 +341,9 @@ void GameScene::Initialize() {
 	//サウンドデータの読み込み
     breakSoundData_ = audio_->LoadWave("breakRock.mp3");
     breakMissSoundData_ = audio_->LoadWave("breakMiss.mp3");
-    stage1BgmData_ = audio_->LoadWave("stage1_BGM.mp3");
+    stage1BgmData_ = audio_->LoadWave("stage.mp3");
+	titleBgmData_ = audio_->LoadWave("title.mp3");
+	decisionSEData_ = audio_->LoadWave("decision.mp3");
 
 	playerSprite_.reset(Sprite::Create(playerTexture_, {}));
 
@@ -415,6 +425,8 @@ void GameScene::Update() {
 		// ステージ読み込み
 		if (careMove_) {
 			LoadRockPopData("stage1");
+			textureBackground1_ = TextureManager::Load("title/title1.png");
+			textureBackground2_ = TextureManager::Load("title/title2.png");
 		}
 		break; // switch ブロックを終了
 	case 2:
@@ -425,6 +437,8 @@ void GameScene::Update() {
 		// ステージ読み込み
 		if (careMove_) {
 			LoadRockPopData("stage2");
+			textureBackground1_ = TextureManager::Load("title/stage2_1.png");
+			textureBackground2_ = TextureManager::Load("title/stage2_2.png");
 		}
 		break; // switch ブロックを終了
 	case 3:
@@ -435,6 +449,8 @@ void GameScene::Update() {
 		// ステージ読み込み
 		if (careMove_) {
 			LoadRockPopData("stage3");
+			textureBackground1_ = TextureManager::Load("title/stage3_1.png");
+			textureBackground2_ = TextureManager::Load("title/stage3_2.png");
 		}
 		break; // switch ブロックを終了
 	}
