@@ -34,6 +34,7 @@ void Title::MenuMove() {
 	for (int i = 0; i < 3; i++) {
 		sprite[i]->SetPosition({MenuPos_.x + 320*i, MenuPos_.y});
 	}
+	spriteBoard_->SetPosition({MenuPos_.x + 320 , 100});
 	if (effect ) {
 		MenuPos_.x -= 4;
 	}
@@ -88,6 +89,12 @@ void Title::Initialize() {
 	texture_[2] = TextureManager::Load("title/stage3.png");
 	textureTitle_ = TextureManager::Load("title/title.png");
 	
+	// 看板
+	textureBoard_ = TextureManager::Load("signboard.png");
+	spriteBoard_ =
+	    Sprite::Create(textureBoard_, {640, 100}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+	
+
 	spriteTitle = Sprite::Create(textureTitle_, {1300, 720 / 2}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 
 	for (int i = 0; i < 3; i++) {
@@ -189,6 +196,6 @@ void Title::Draw() {
 		
 	}
 
-	
+	spriteBoard_->Draw();
 	
 }

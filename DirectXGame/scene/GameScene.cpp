@@ -108,10 +108,13 @@ void GameScene::BehaviorTitleInitialize() {
 
 //メニュー初期化
 void GameScene::BehaviorMenuInitialize() {
+	if (careMove_) {
+		CartPos_ = {200, 580};
+		TirepPos_ = {140, 630};
+	}
 	scene_ = false;
 	a = 0;
-	CartPos_ = {200, 580};
-	TirepPos_ = {140, 630};
+	
 	careMove_ = false;
 	Move_ = false;
 	// 光
@@ -132,9 +135,6 @@ void GameScene::BehaviorMenuInitialize() {
 // ゲームシーン初期化
 void GameScene::BehaviorSceneInitialize() {
 	cartSpeed = 0.0f;
-	
-	
-	careMove_ = false;
 	Move_ = false;
 	textureBackground1_ = TextureManager::Load("title/title1.png");
 	textureBackground2_ = TextureManager::Load("title/title2.png");
@@ -159,7 +159,9 @@ void GameScene::BehaviorSceneInitialize() {
 }
 
 // クリア初期化
-void GameScene::BehaviorClearInitialize() {}
+void GameScene::BehaviorClearInitialize() {
+	
+}
 
 // オーバー初期化
 void GameScene::BehaviorOverInitialize() {
@@ -197,17 +199,18 @@ void GameScene::BehaviorSceneUpdata() {
 	if (input_->TriggerKey(DIK_1)) {
 		behaviorRequest_ = Behavior::kMenuScene;
 	}
-	if (a >= 0) {
+	if (a > 0) {
 		a -= 0.01f;
 	} else {
 		a = 0;
+		
 	}
 
 	startCount--;
 	startCount = max(startCount, 0);
 
 	if (score_->GetTimer() > 0 && startCount <= 0) {
-		if (!audio_->IsPlaying(stage1BgmData_)) {
+		if (!audio_->IsPlaying(stage1Bgmhandle_)) {
 			stage1Bgmhandle_ = audio_->PlayWave(stage1BgmData_, true, 0.1f);
 		}
 
@@ -283,6 +286,8 @@ void GameScene::BehaviorSceneUpdata() {
 void GameScene::BehaviorClearUpdata() {
 	order = 1;
 	if (input_->TriggerKey(DIK_SPACE)) {
+		// BGM停止
+		audio_->StopWave(stage1Bgmhandle_);
 		behaviorRequest_ = Behavior::kMenuScene;
 	}
 
@@ -338,6 +343,11 @@ void GameScene::Initialize() {
 
     score_ = std::make_unique<Score>();
     score_->Initialize(numberTexture_);
+
+	//看板
+	textureBoard_ = TextureManager::Load("signboard.png");
+	spriteBoard_  = Sprite::Create(textureBoard_, {640,100 }, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+	
 
 	//トロッコ
 	textureCart_ = TextureManager::Load("title/cart.png");
@@ -538,6 +548,7 @@ void GameScene::Draw() {
 		}
 		break;
 	case Behavior::kMenuScene:
+		spriteBoard_->Draw();
 		spriteCart->Draw();
 		for (int i = 0; i < 2; i++) {
 			spriteTire[i]->Draw();
@@ -565,13 +576,6 @@ void GameScene::Draw() {
 	spriteTransition_->Draw();
 	
 	
-	
-
-
-	
-
-
-	spriteTransition_->Draw();
 	
 	
 	

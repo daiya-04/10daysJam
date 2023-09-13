@@ -50,14 +50,14 @@ private:
 	Sprite* Background2;
 	Sprite* spriteTitle;
 	
-
-	
-	
 	uint32_t texture_[3];
 	uint32_t textureBackground1_;
 	uint32_t textureBackground2_;
 	uint32_t textureTitle_;
 	
+	// 看板
+	uint32_t textureBoard_;
+	Sprite* spriteBoard_;
 
 	Vector2 pos;
 	Vector2 BackgroundPos1_;

@@ -145,6 +145,10 @@ private: // メンバ変数
 	float a = 0;
 	bool transition_;
 
+	//看板
+	uint32_t textureBoard_;
+	Sprite* spriteBoard_;
+
 
 	//ランプ
 	uint32_t texture_[3];
